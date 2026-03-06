@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>万能抽奖</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <h1 id="sidebar-title">转盘</h1>
+        <button type="button" class="btn btn-primary" id="btn-new-wheel">+ 新建</button>
+      </div>
+      <ul class="wheel-list" id="wheel-list"></ul>
+      <button type="button" class="btn btn-deleted-open" id="btn-open-deleted">最近删除</button>
+    </aside>
+
+    <main class="main">
+      <div class="wheel-area" id="wheel-area">
+        <p class="empty-hint" id="empty-hint">请新建或从左侧选择转盘</p>
+        <div class="wheel-editor hidden" id="wheel-editor">
+          <div class="editor-header">
+            <input type="text" class="wheel-name-input" id="wheel-name" placeholder="名称" />
+            <button type="button" class="btn btn-danger btn-icon" id="btn-delete-wheel" title="删除">删除</button>
+          </div>
+          <div class="editor-body">
+            <aside class="batch-input-panel">
+              <label class="batch-input-label">一键输入</label>
+              <textarea id="batch-input" class="batch-input" rows="8" placeholder="多个名称用逗号、顿号或空格隔开，一键填入右侧列表"></textarea>
+              <button type="button" class="btn btn-primary" id="btn-batch-input">一键填入</button>
+            </aside>
+            <div class="editor-main">
+              <div class="slots-section">
+                <div class="slots-header">
+                  <span class="total-display" id="total-display">总数：0</span>
+                  <div class="slots-header-fill" id="slots-header-fill" title="点击添加第一行"></div>
+                  <button type="button" class="btn btn-secondary btn-sm" id="btn-add-slot">+ 添加</button>
+                  <button type="button" class="btn btn-secondary btn-sm" id="btn-boost">增加权重</button>
+                  <button type="button" class="btn btn-danger btn-sm" id="btn-clear-slots">清空</button>
+                </div>
+                <ul class="slots-list" id="slots-list"></ul>
+              </div>
+              <div class="scroll-lottery-zone">
+            <div class="scroll-lottery-viewport" id="scroll-viewport">
+              <ul class="scroll-lottery-list" id="scroll-lottery-list"></ul>
+            </div>
+            <button type="button" class="btn btn-spin" id="btn-spin">开始抽奖</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="result-overlay hidden" id="result-overlay">
+        <div class="result-card">
+          <p class="result-label">恭喜抽中</p>
+          <p class="result-name" id="result-name"></p>
+          <button type="button" class="btn btn-primary" id="btn-close-result">确定</button>
+        </div>
+      </div>
+
+      <div class="boost-overlay hidden" id="boost-overlay">
+        <div class="boost-modal">
+          <p class="boost-title">增加权重</p>
+          <p class="boost-hint">勾选要加权的项并填写追加数量，确定后将在列表末尾追加对应份数</p>
+          <ul class="boost-list" id="boost-list"></ul>
+          <div class="boost-actions">
+            <button type="button" class="btn btn-secondary" id="btn-boost-cancel">取消</button>
+            <button type="button" class="btn btn-primary" id="btn-boost-confirm">确定</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="admin-overlay hidden" id="admin-overlay">
+        <div class="admin-modal">
+          <div class="admin-header">
+            <h2 class="admin-title">管理员</h2>
+            <button type="button" class="btn btn-secondary btn-sm" id="btn-close-admin">关闭</button>
+          </div>
+          <div class="admin-body">
+            <label class="admin-row">
+              <input type="checkbox" id="admin-secret-toggle" />
+              <span>暗改功能</span>
+            </label>
+            <div class="admin-row admin-hint-row" id="admin-hint-row">
+              <label class="admin-row" style="margin: 0;">
+                <input type="checkbox" id="admin-hint-toggle" />
+                <span>变色提示</span>
+              </label>
+            </div>
+            <div class="admin-guarantee-block">
+              <div class="admin-guarantee-block-header">
+                <p class="admin-block-title">第几次抽奖抽中某人</p>
+                <div class="admin-guarantee-header-actions">
+                  <button type="button" class="btn btn-secondary btn-sm" id="btn-admin-guarantee-add">添加</button>
+                  <button type="button" class="btn btn-danger btn-sm" id="btn-admin-guarantee-clear">清空</button>
+                </div>
+              </div>
+              <p class="admin-guarantee-status" id="admin-guarantee-status"></p>
+              <div class="admin-guarantee-rows" id="admin-guarantee-rows"></div>
+              <button type="button" class="btn btn-primary btn-sm" id="btn-admin-guarantee-set">设定</button>
+            </div>
+            <div class="admin-blacklist-block">
+              <div class="admin-blacklist-header">
+                <p class="admin-block-title">黑名单</p>
+                <button type="button" class="btn btn-danger btn-sm" id="btn-blacklist-clear">清空</button>
+              </div>
+              <p class="admin-blacklist-hint">勾选的名称不会被抽中</p>
+              <ul class="admin-blacklist-list" id="admin-blacklist-list"></ul>
+              <p class="admin-blacklist-empty hidden" id="admin-blacklist-empty">当前转盘暂无名称</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="deleted-overlay hidden" id="deleted-overlay">
+        <div class="deleted-modal">
+          <div class="deleted-modal-header">
+            <h2 class="deleted-modal-title">最近删除</h2>
+            <button type="button" class="btn btn-secondary btn-sm" id="btn-close-deleted">关闭</button>
+          </div>
+          <div class="deleted-modal-body">
+            <ul class="deleted-list" id="deleted-list"></ul>
+            <p class="deleted-empty-hint hidden" id="deleted-empty-hint">暂无已删除的转盘</p>
+          </div>
+        </div>
+      </div>
+
+      </main>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
